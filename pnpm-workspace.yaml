@@ -1,2 +1,2 @@
 allowBuilds:
-  '@clerk/shared': true
+  unrs-resolver: true
