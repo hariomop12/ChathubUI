@@ -21,9 +21,9 @@ import type {
 } from "@/lib/types";
 
 const PEER_HOST = process.env.NEXT_PUBLIC_PEER_HOST || "";
-const PEER_PORT = Number(process.env.NEXT_PUBLIC_PEER_PORT || "0") || undefined;
-const PEER_PATH = process.env.NEXT_PUBLIC_PEER_PATH || "/peerjs";
 const PEER_SECURE = process.env.NEXT_PUBLIC_PEER_SECURE === "true";
+const PEER_PORT = Number(process.env.NEXT_PUBLIC_PEER_PORT || "0") || (PEER_SECURE ? 443 : 80);
+const PEER_PATH = process.env.NEXT_PUBLIC_PEER_PATH || "/peerjs";
 const CALLS_ENABLED = !!PEER_HOST;
 
 interface RealtimeRef {
@@ -723,6 +723,20 @@ function ChatClient({ profile }: { profile: GoogleProfile }) {
 }
 
 export default function ChatPage() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className="flex h-dvh items-center justify-center bg-background text-sm text-muted-foreground">
+        Loading…
+      </div>
+    );
+  }
+
   const profile = getGoogleProfile();
 
   if (!profile) {
